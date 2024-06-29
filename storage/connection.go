@@ -10,7 +10,7 @@ const (
 	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
-	dbname   = "EcoTrack"
+	dbname   = "UserService"
 	password = "hamidjon4424"
 )
 
