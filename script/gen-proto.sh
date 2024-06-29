@@ -1,7 +1,16 @@
 #!/bin/zsh
 CURRENT_DIR=$1
-rm -rf ${CURRENT_DIR}/proto/user
-for x in $(find ${CURRENT_DIR}/protos/user -type d); do
-  protoc -I=${x} -I=${CURRENT_DIR}/protos -I /usr/local/go --go_out=${CURRENT_DIR} \
-   --go-grpc_out=${CURRENT_DIR} ${x}/*.proto
+
+# Protobuf fayllarni saqlash uchun `genproto` katalogini o'chirib qayta yaratish
+rm -rf ${CURRENT_DIR}/genproto
+mkdir -p ${CURRENT_DIR}/genproto
+
+# Protobuf fayllarni generatsiya qilish
+for x in $(find ${CURRENT_DIR}/proto -type d); do
+  echo "Processing directory: $x"
+  protoc -I=${x} -I=${CURRENT_DIR}/proto -I /usr/local/include \
+    --go_out=${CURRENT_DIR}/genproto --go-grpc_out=${CURRENT_DIR}/genproto \
+    ${x}/*.proto
 done
+
+echo "Protobuf generation completed."
