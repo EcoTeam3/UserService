@@ -23,34 +23,34 @@ func (S *Server) GetUser(ctx context.Context, userId *pb.UserId) (*pb.User, erro
 	return user, nil
 }
 
-func (S *Server) UpdateUser(ctx context.Context, user *pb.User) (*pb.Status,error){
-	status,err := S.U.UpdateUser(user)
-	if err != nil{
-		return nil,err
+func (S *Server) UpdateUser(ctx context.Context, user *pb.User) (*pb.Status, error) {
+	status, err := S.U.UpdateUser(user)
+	if err != nil {
+		return nil, err
 	}
-	return status,err
+	return status, err
 }
 
-func (S *Server) DeleteUser(ctx context.Context,userId *pb.UserId) (*pb.Status,error){
-	status,err := S.U.DeleteUser(userId)
-	if err != nil{
-		return nil,err
+func (S *Server) DeleteUser(ctx context.Context, userId *pb.UserId) (*pb.Status, error) {
+	status, err := S.U.DeleteUser(userId)
+	if err != nil {
+		return nil, err
 	}
-	return status,nil
+	return status, nil
 }
 
-func (S *Server) GetUserProfile(ctx context.Context,userId *pb.UserId)(*pb.UserProfile,error){
-	userProfil,err := S.U.GetUserProfile(userId)
-	if err != nil{
-		return nil,err
+func (S *Server) GetUserProfile(ctx context.Context, userId *pb.UserId) (*pb.UserProfile, error) {
+	userProfil, err := S.U.GetUserProfile(userId)
+	if err != nil {
+		return nil, err
 	}
-	return userProfil,nil
+	return userProfil, nil
 }
 
-func (S *Server) UpdateUserProfile(ctx context.Context,userId *pb.UserId)(*pb.Status,error){
-	status,err := S.U.UpdateUserProfile(userId)
-	if err != nil{
-		return nil,err
+func (S *Server) UpdateUserProfile(ctx context.Context, userProfile *pb.UserProfile) (*pb.Status, error) {
+	status, err := S.U.UpdateUserProfile(userProfile)
+	if err != nil {
+		return nil, err
 	}
-	return status,nil
+	return status, nil
 }

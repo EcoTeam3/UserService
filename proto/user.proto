@@ -9,7 +9,7 @@ service UserService {
     rpc UpdateUser(User) returns (Status) {}
     rpc DeleteUser(UserId) returns (Status) {}
     rpc GetUserProfile(UserId) returns (UserProfile) {}
-    rpc UpdateUserProfile(User) returns (Status) {}
+    rpc UpdateUserProfile(UserProfile) returns (Status) {}
 }
 
 message UserId {
