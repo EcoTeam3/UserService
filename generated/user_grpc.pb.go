@@ -31,10 +31,10 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
 	GetUser(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*User, error)
-	UpdateUser(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Status, error)
+	UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*Status, error)
 	DeleteUser(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Status, error)
 	GetUserProfile(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*UserProfile, error)
-	UpdateUserProfile(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Status, error)
+	UpdateUserProfile(ctx context.Context, in *User, opts ...grpc.CallOption) (*Status, error)
 }
 
 type userServiceClient struct {
@@ -55,7 +55,7 @@ func (c *userServiceClient) GetUser(ctx context.Context, in *UserId, opts ...grp
 	return out, nil
 }
 
-func (c *userServiceClient) UpdateUser(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Status, error) {
+func (c *userServiceClient) UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*Status, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Status)
 	err := c.cc.Invoke(ctx, UserService_UpdateUser_FullMethodName, in, out, cOpts...)
@@ -85,7 +85,7 @@ func (c *userServiceClient) GetUserProfile(ctx context.Context, in *UserId, opts
 	return out, nil
 }
 
-func (c *userServiceClient) UpdateUserProfile(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Status, error) {
+func (c *userServiceClient) UpdateUserProfile(ctx context.Context, in *User, opts ...grpc.CallOption) (*Status, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Status)
 	err := c.cc.Invoke(ctx, UserService_UpdateUserProfile_FullMethodName, in, out, cOpts...)
@@ -100,10 +100,10 @@ func (c *userServiceClient) UpdateUserProfile(ctx context.Context, in *UserId, o
 // for forward compatibility
 type UserServiceServer interface {
 	GetUser(context.Context, *UserId) (*User, error)
-	UpdateUser(context.Context, *UserId) (*Status, error)
+	UpdateUser(context.Context, *User) (*Status, error)
 	DeleteUser(context.Context, *UserId) (*Status, error)
 	GetUserProfile(context.Context, *UserId) (*UserProfile, error)
-	UpdateUserProfile(context.Context, *UserId) (*Status, error)
+	UpdateUserProfile(context.Context, *User) (*Status, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -114,7 +114,7 @@ type UnimplementedUserServiceServer struct {
 func (UnimplementedUserServiceServer) GetUser(context.Context, *UserId) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
-func (UnimplementedUserServiceServer) UpdateUser(context.Context, *UserId) (*Status, error) {
+func (UnimplementedUserServiceServer) UpdateUser(context.Context, *User) (*Status, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
 }
 func (UnimplementedUserServiceServer) DeleteUser(context.Context, *UserId) (*Status, error) {
@@ -123,7 +123,7 @@ func (UnimplementedUserServiceServer) DeleteUser(context.Context, *UserId) (*Sta
 func (UnimplementedUserServiceServer) GetUserProfile(context.Context, *UserId) (*UserProfile, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserProfile not implemented")
 }
-func (UnimplementedUserServiceServer) UpdateUserProfile(context.Context, *UserId) (*Status, error) {
+func (UnimplementedUserServiceServer) UpdateUserProfile(context.Context, *User) (*Status, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserProfile not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
@@ -158,7 +158,7 @@ func _UserService_GetUser_Handler(srv interface{}, ctx context.Context, dec func
 }
 
 func _UserService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserId)
+	in := new(User)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -170,7 +170,7 @@ func _UserService_UpdateUser_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: UserService_UpdateUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).UpdateUser(ctx, req.(*UserId))
+		return srv.(UserServiceServer).UpdateUser(ctx, req.(*User))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -212,7 +212,7 @@ func _UserService_GetUserProfile_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _UserService_UpdateUserProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserId)
+	in := new(User)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -224,7 +224,7 @@ func _UserService_UpdateUserProfile_Handler(srv interface{}, ctx context.Context
 		FullMethod: UserService_UpdateUserProfile_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).UpdateUserProfile(ctx, req.(*UserId))
+		return srv.(UserServiceServer).UpdateUserProfile(ctx, req.(*User))
 	}
 	return interceptor(ctx, in, info, handler)
 }
