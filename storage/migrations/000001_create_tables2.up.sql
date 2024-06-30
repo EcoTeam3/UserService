@@ -1,6 +1,6 @@
 -- Users table
 CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE users (
 
 -- User profiles table
 CREATE TABLE user_profiles (
-    user_id INTEGER PRIMARY KEY REFERENCES users(id),
+    user_id UUID PRIMARY KEY REFERENCES users(user_id),
     full_name VARCHAR(100),
     bio TEXT,
     location VARCHAR(100),
