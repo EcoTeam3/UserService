@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net"
+	"userService/config"
 	pb "userService/generated"
 	"userService/service"
 	"userService/storage"
@@ -18,7 +19,8 @@ func main() {
 	}
 	defer db.Close()
 
-	listener, err := net.Listen("tcp", ":50051")
+	config := config.Load()
+	listener, err := net.Listen("tcp", ":"+config.URL_PORT)
 	if err != nil{
 		log.Fatal(err)
 	}
