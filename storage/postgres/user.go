@@ -115,6 +115,9 @@ func (U *NewUser) GetUserProfile(userId *pb.UserId) (*pb.UserProfile, error) {
 func (U *NewUser) UpdateUserProfile(user *pb.UserProfile) (*pb.Status, error) {
 	query := `UPDATE User_profiles SET user_id = $1`
 	id, err := uuid.Parse(user.UserId.UserId)
+	if err != nil{
+		return &pb.Status{Status: false}, err
+	}
 	arr := []interface{}{id}
 	var param []string
 	if len(user.FullName) > 0 {
