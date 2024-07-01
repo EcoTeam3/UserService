@@ -17,7 +17,7 @@ message UserId {
 }
 
 message User {
-    UserId userId       = 1;
+    string userId       = 1;
     string username     = 2;
     string email        = 3;
     string passwordHash = 4;
@@ -26,7 +26,7 @@ message User {
 }
 
 message UserProfile {
-    UserId userId    = 1;
+    string userId    = 1;
     string fullName  = 2;
     string bio       = 3;
     string location  = 4;
