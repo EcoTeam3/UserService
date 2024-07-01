@@ -14,14 +14,14 @@ import (
 
 func main() {
 	db, err := storage.Connect()
-	if err != nil{
+	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
 	config := config.Load()
 	listener, err := net.Listen("tcp", ":"+config.URL_PORT)
-	if err != nil{
+	if err != nil {
 		log.Fatal(err)
 	}
 	defer listener.Close()
@@ -29,7 +29,7 @@ func main() {
 	s := service.NewUserServer(*postgres.NewUserRepo(db))
 	grpc := grpc.NewServer()
 	pb.RegisterUserServiceServer(grpc, s)
-	if err = grpc.Serve(listener); err != nil{
+	if err = grpc.Serve(listener); err != nil {
 		log.Fatal(err)
 	}
 }

@@ -8,8 +8,6 @@ import (
 	"time"
 
 	pb "userService/generated"
-
-	"github.com/google/uuid"
 )
 
 type NewUser struct {
@@ -21,32 +19,28 @@ func NewUserRepo(db *sql.DB) *NewUser {
 }
 
 func (U *NewUser) GetUser(userId *pb.UserId) (*pb.User, error) {
-	id, err := uuid.Parse(userId.UserId)
-	if err != nil {
-		return nil, fmt.Errorf("invalid user ID: %w", err)
+	if U.Db == nil {
+		return nil, fmt.Errorf("database connection is nil")
+	}
+	if userId == nil || userId.UserId == "" {
+		return nil, fmt.Errorf("userId is nil or empty")
 	}
 
 	user := pb.User{}
-	var userIdBytes []byte
-	err = U.Db.QueryRow(`SELECT user_id, username, email, created_at
+	err := U.Db.QueryRow(`SELECT user_id, username, email, created_at
        FROM Users
-       WHERE user_id = $1 AND deleted_at IS NULL`, id).
-		Scan(&userIdBytes, &user.Username, &user.Email, &user.CreatedAt)
+       WHERE user_id = $1 AND deleted_at IS NULL`, userId.UserId).
+		Scan(&user.UserId, &user.Username, &user.Email, &user.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
 
-	user.UserId = &pb.UserId{UserId: uuid.UUID(userIdBytes).String()}
 	return &user, nil
 }
 
 func (U *NewUser) UpdateUser(user *pb.User) (*pb.Status, error) {
 	query := `UPDATE Users SET user_id = $1`
-	id, err := uuid.Parse(user.UserId.UserId) 
-	if err != nil{
-		return &pb.Status{Status: false}, err
-	}
-	arr := []interface{}{id}
+	arr := []interface{}{user.UserId}
 	var param []string
 	if len(user.Username) > 0 {
 		arr = append(arr, user.Username)
@@ -71,8 +65,8 @@ func (U *NewUser) UpdateUser(user *pb.User) (*pb.Status, error) {
 	}
 
 	query += fmt.Sprintf(" WHERE deleted_at is null and user_id = $%d", n)
-	arr = append(arr, id)
-	_, err = U.Db.Exec(query, arr...)
+	arr = append(arr, user.UserId)
+	_, err := U.Db.Exec(query, arr...)
 	if err != nil {
 		return &pb.Status{Status: false}, err
 	}
@@ -80,14 +74,9 @@ func (U *NewUser) UpdateUser(user *pb.User) (*pb.Status, error) {
 }
 
 func (U *NewUser) DeleteUser(userId *pb.UserId) (*pb.Status, error) {
-	id, err := uuid.Parse(userId.UserId)
-	if err != nil {
-		return &pb.Status{Status: false}, fmt.Errorf("invalid user ID: %w", err)
-	}
-
-	_, err = U.Db.Exec(`UPDATE Users 
+	_, err := U.Db.Exec(`UPDATE Users 
        SET deleted_at = $1
-       WHERE user_id = $2`, time.Now(), id)
+       WHERE user_id = $2`, time.Now(), userId.UserId)
 	if err != nil {
 		return &pb.Status{Status: false}, err
 	}
@@ -95,30 +84,19 @@ func (U *NewUser) DeleteUser(userId *pb.UserId) (*pb.Status, error) {
 }
 
 func (U *NewUser) GetUserProfile(userId *pb.UserId) (*pb.UserProfile, error) {
-	id, err := uuid.Parse(userId.UserId)
-	if err != nil {
-		return nil, fmt.Errorf("invalid user ID: %w", err)
-	}
-
 	userProfile := pb.UserProfile{}
-	var userIdBytes []byte
-	err = U.Db.QueryRow("SELECT user_id, full_name, bio, location, avatar_url FROM User_profiles WHERE user_id = $1", id).
-		Scan(&userIdBytes, &userProfile.FullName, &userProfile.Bio, &userProfile.Location, &userProfile.AvatarUrl)
+	err := U.Db.QueryRow("SELECT user_id, full_name, bio, location, avatar_url FROM User_profiles WHERE user_id = $1", userId.UserId).
+		Scan(&userProfile.UserId, &userProfile.FullName, &userProfile.Bio, &userProfile.Location, &userProfile.AvatarUrl)
 	if err != nil {
 		return nil, err
 	}
 
-	userProfile.UserId = &pb.UserId{UserId: uuid.UUID(userIdBytes).String()}
 	return &userProfile, nil
 }
 
 func (U *NewUser) UpdateUserProfile(user *pb.UserProfile) (*pb.Status, error) {
 	query := `UPDATE User_profiles SET user_id = $1`
-	id, err := uuid.Parse(user.UserId.UserId)
-	if err != nil{
-		return &pb.Status{Status: false}, err
-	}
-	arr := []interface{}{id}
+	arr := []interface{}{user.UserId}
 	var param []string
 	if len(user.FullName) > 0 {
 		arr = append(arr, user.FullName)
@@ -149,9 +127,9 @@ func (U *NewUser) UpdateUserProfile(user *pb.UserProfile) (*pb.Status, error) {
 	}
 
 	query += fmt.Sprintf(" WHERE user_id = $%d", n)
-	arr = append(arr, user.UserId.UserId)
+	arr = append(arr, user.UserId)
 
-	_, err = U.Db.Exec(query, arr...)
+	_, err := U.Db.Exec(query, arr...)
 	if err != nil {
 		return &pb.Status{Status: false}, err
 	}
