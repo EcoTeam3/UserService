@@ -4,7 +4,7 @@
 // - protoc             v3.12.4
 // source: community.proto
 
-package generated
+package community
 
 import (
 	context "context"

@@ -4,7 +4,7 @@
 // - protoc             v3.12.4
 // source: habitTracker.proto
 
-package generated
+package habit
 
 import (
 	context "context"

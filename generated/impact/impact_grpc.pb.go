@@ -4,7 +4,7 @@
 // - protoc             v3.12.4
 // source: impact.proto
 
-package generated
+package impact
 
 import (
 	context "context"
