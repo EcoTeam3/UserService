@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	pb "userService/generated"
+	pb "userService/generated/user"
 )
 
 type NewUser struct {
