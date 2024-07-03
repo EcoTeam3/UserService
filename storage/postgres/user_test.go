@@ -3,7 +3,7 @@ package postgres
 import (
 	"reflect"
 	"testing"
-	"userService/generated"
+	pb "userService/generated/user"
 	"userService/storage"
 )
 
@@ -20,7 +20,7 @@ func UserRepo(t *testing.T) *NewUser {
 func TestGetUser(t *testing.T) {
 	userRepo := UserRepo(t)
 
-	userId := generated.UserId{UserId: ""}
+	userId := pb.UserId{UserId: ""}
 
 	user, err := userRepo.GetUser(&userId)
 	if err != nil {
@@ -28,7 +28,7 @@ func TestGetUser(t *testing.T) {
 		return
 	}
 
-	case1 := &generated.User{
+	case1 := &pb.User{
 		UserId:       "",
 		Username:     "john_doe",
 		Email:        "john.doe@example.com",
@@ -45,7 +45,7 @@ func TestGetUser(t *testing.T) {
 func TestUpdateUser(t *testing.T) {
 	userRepo := UserRepo(t)
 
-	user := generated.User{
+	user := pb.User{
 		UserId:       "",
 		Username:     "",
 		Email:        "",
@@ -57,7 +57,7 @@ func TestUpdateUser(t *testing.T) {
 		return
 	}
 
-	case1 := &generated.Status{
+	case1 := &pb.Status{
 		Status: true,
 	}
 
@@ -70,7 +70,7 @@ func TestUpdateUser(t *testing.T) {
 func TestDeleteUser(t *testing.T) {
 	userRepo := UserRepo(t)
 
-	userId := generated.UserId{
+	userId := pb.UserId{
 		UserId: "",
 	}
 
@@ -80,7 +80,7 @@ func TestDeleteUser(t *testing.T) {
 		t.Error("ERROR : ", err)
 		return
 	}
-	case1 := &generated.Status{
+	case1 := &pb.Status{
 		Status: true,
 	}
 
@@ -93,7 +93,7 @@ func TestDeleteUser(t *testing.T) {
 func TestGetUserProfile(t *testing.T) {
 	userRepo := UserRepo(t)
 
-	userId := generated.UserId{
+	userId := pb.UserId{
 		UserId: "",
 	}
 
@@ -103,7 +103,7 @@ func TestGetUserProfile(t *testing.T) {
 		return
 	}
 
-	case1 := &generated.UserProfile{
+	case1 := &pb.UserProfile{
 		UserId:    "",
 		FullName:  "John Doe",
 		Bio:       "Software developer and tech enthusiast.",
@@ -119,7 +119,7 @@ func TestGetUserProfile(t *testing.T) {
 func TestUpdateUserProfile(t *testing.T) {
 	userRepo := UserRepo(t)
 
-	userProfile := generated.UserProfile{
+	userProfile := pb.UserProfile{
 		UserId:    "",
 		FullName:  "",
 		Bio:       "",
@@ -132,7 +132,7 @@ func TestUpdateUserProfile(t *testing.T) {
 		return
 	}
 
-	case1 := &generated.Status{
+	case1 := &pb.Status{
 		Status: true,
 	}
 

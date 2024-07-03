@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	pb "userService/generated"
+	pb "userService/generated/user"
 	"userService/storage/postgres"
 )
 

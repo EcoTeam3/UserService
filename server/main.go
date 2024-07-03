@@ -4,7 +4,7 @@ import (
 	"log"
 	"net"
 	"userService/config"
-	pb "userService/generated"
+	pb "userService/generated/user"
 	"userService/service"
 	"userService/storage"
 	"userService/storage/postgres"
