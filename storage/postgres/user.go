@@ -135,3 +135,13 @@ func (U *NewUser) UpdateUserProfile(user *pb.UserProfile) (*pb.Status, error) {
 	}
 	return &pb.Status{Status: true}, nil
 }
+
+
+func(U *NewUser) CreateUser(user *pb.User)(*pb.Status, error){
+	_, err := U.Db.Exec(`INSERT INTO Users(username, email, password_hash) Values($1, $2, $3)`,
+					user.Username, user.Email, user.PasswordHash)
+	if err != nil{
+		return &pb.Status{Status: false}, err
+	}
+	return &pb.Status{Status: true}, nil
+}

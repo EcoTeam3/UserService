@@ -4,6 +4,7 @@ import (
 	"context"
 	pb "userService/generated/user"
 	"userService/storage/postgres"
+
 )
 
 type Server struct {
@@ -50,6 +51,14 @@ func (S *Server) GetUserProfile(ctx context.Context, userId *pb.UserId) (*pb.Use
 func (S *Server) UpdateUserProfile(ctx context.Context, userProfile *pb.UserProfile) (*pb.Status, error) {
 	status, err := S.U.UpdateUserProfile(userProfile)
 	if err != nil {
+		return nil, err
+	}
+	return status, nil
+}
+
+func(S *Server) CreateUser(ctx context.Context, user *pb.User)(*pb.Status, error){
+	status, err := S.U.CreateUser(user)
+	if err != nil{
 		return nil, err
 	}
 	return status, nil
