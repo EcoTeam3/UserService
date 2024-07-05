@@ -16,6 +16,24 @@ func NewUserServer(u postgres.NewUser) *Server {
 	return &Server{U: u}
 }
 
+func(S *Server) Login(ctx context.Context, login *pb.LoginUser)(*pb.RetUser, error){
+	user, err := S.U.Login(login)
+	if err != nil{
+		return nil, err
+	}
+	return user, nil
+}
+
+
+func (S *Server) CheckUser(ctx context.Context, user *pb.User) (*pb.Status, error){
+	status, err := S.U.CheckUser(user)
+	if err != nil{
+		return nil, err
+	}
+	return status, nil
+}
+
+
 func (S *Server) GetUser(ctx context.Context, userId *pb.UserId) (*pb.User, error) {
 	user, err := S.U.GetUser(userId)
 	if err != nil {

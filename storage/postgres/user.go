@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -19,13 +20,6 @@ func NewUserRepo(db *sql.DB) *NewUser {
 }
 
 func (U *NewUser) GetUser(userId *pb.UserId) (*pb.User, error) {
-	if U.Db == nil {
-		return nil, fmt.Errorf("database connection is nil")
-	}
-	if userId == nil || userId.UserId == "" {
-		return nil, fmt.Errorf("userId is nil or empty")
-	}
-
 	user := pb.User{}
 	err := U.Db.QueryRow(`SELECT user_id, username, email, created_at
        FROM Users
@@ -36,6 +30,36 @@ func (U *NewUser) GetUser(userId *pb.UserId) (*pb.User, error) {
 	}
 
 	return &user, nil
+}
+
+func (U *NewUser) Login(login *pb.LoginUser) (*pb.RetUser, error) {
+	ret := &pb.RetUser{}
+	err := U.Db.QueryRow(`SELECT username, email, password_hash FROM users where email = $1`, login.Email).Scan(&ret.Username, &ret.Email, &ret.Password)
+	if err == sql.ErrNoRows {
+		return nil, errors.New("not found")
+	}
+	if err != nil{
+		return nil, err
+	}
+	return ret, nil
+}
+
+func (u *NewUser) CheckUser(user *pb.User) (*pb.Status, error) {
+	var userId string
+	err := u.Db.QueryRow(`SELECT user_id FROM Users WHERE email = $1`, user.Email).Scan(&userId)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return &pb.Status{Status: true}, nil
+		}
+		return &pb.Status{Status: false}, err
+	}
+
+	if len(userId) > 0 {
+		return &pb.Status{Status: false}, nil
+	} else {
+		return &pb.Status{Status: true}, nil
+	}
 }
 
 func (U *NewUser) UpdateUser(user *pb.User) (*pb.Status, error) {
@@ -136,11 +160,10 @@ func (U *NewUser) UpdateUserProfile(user *pb.UserProfile) (*pb.Status, error) {
 	return &pb.Status{Status: true}, nil
 }
 
-
-func(U *NewUser) CreateUser(user *pb.User)(*pb.Status, error){
+func (U *NewUser) CreateUser(user *pb.User) (*pb.Status, error) {
 	_, err := U.Db.Exec(`INSERT INTO Users(username, email, password_hash) Values($1, $2, $3)`,
-					user.Username, user.Email, user.PasswordHash)
-	if err != nil{
+		user.Username, user.Email, user.PasswordHash)
+	if err != nil {
 		return &pb.Status{Status: false}, err
 	}
 	return &pb.Status{Status: true}, nil
