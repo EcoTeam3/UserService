@@ -33,8 +33,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ImpactClient interface {
 	CreateFootprint(ctx context.Context, in *CarbonFootprint, opts ...grpc.CallOption) (*Status, error)
-	GetUserImpact(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*CarbonFootprints, error)
-	GetGroupImpact(ctx context.Context, in *GroupId, opts ...grpc.CallOption) (*CarbonFootprint, error)
+	GetUserImpact(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Amount, error)
+	GetGroupImpact(ctx context.Context, in *GroupId, opts ...grpc.CallOption) (*Amount, error)
 	GetLeaderBoardUsers(ctx context.Context, in *LeaderBoard, opts ...grpc.CallOption) (*LeaderBoardUsers, error)
 	GetLeaderBoardGroups(ctx context.Context, in *LeaderBoard, opts ...grpc.CallOption) (*LeaderBoardGroups, error)
 	CreateDonation(ctx context.Context, in *Donation, opts ...grpc.CallOption) (*Status, error)
@@ -59,9 +59,9 @@ func (c *impactClient) CreateFootprint(ctx context.Context, in *CarbonFootprint,
 	return out, nil
 }
 
-func (c *impactClient) GetUserImpact(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*CarbonFootprints, error) {
+func (c *impactClient) GetUserImpact(ctx context.Context, in *UserId, opts ...grpc.CallOption) (*Amount, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CarbonFootprints)
+	out := new(Amount)
 	err := c.cc.Invoke(ctx, Impact_GetUserImpact_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -69,9 +69,9 @@ func (c *impactClient) GetUserImpact(ctx context.Context, in *UserId, opts ...gr
 	return out, nil
 }
 
-func (c *impactClient) GetGroupImpact(ctx context.Context, in *GroupId, opts ...grpc.CallOption) (*CarbonFootprint, error) {
+func (c *impactClient) GetGroupImpact(ctx context.Context, in *GroupId, opts ...grpc.CallOption) (*Amount, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CarbonFootprint)
+	out := new(Amount)
 	err := c.cc.Invoke(ctx, Impact_GetGroupImpact_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -124,8 +124,8 @@ func (c *impactClient) GetDonations(ctx context.Context, in *DonationCause, opts
 // for forward compatibility
 type ImpactServer interface {
 	CreateFootprint(context.Context, *CarbonFootprint) (*Status, error)
-	GetUserImpact(context.Context, *UserId) (*CarbonFootprints, error)
-	GetGroupImpact(context.Context, *GroupId) (*CarbonFootprint, error)
+	GetUserImpact(context.Context, *UserId) (*Amount, error)
+	GetGroupImpact(context.Context, *GroupId) (*Amount, error)
 	GetLeaderBoardUsers(context.Context, *LeaderBoard) (*LeaderBoardUsers, error)
 	GetLeaderBoardGroups(context.Context, *LeaderBoard) (*LeaderBoardGroups, error)
 	CreateDonation(context.Context, *Donation) (*Status, error)
@@ -140,10 +140,10 @@ type UnimplementedImpactServer struct {
 func (UnimplementedImpactServer) CreateFootprint(context.Context, *CarbonFootprint) (*Status, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateFootprint not implemented")
 }
-func (UnimplementedImpactServer) GetUserImpact(context.Context, *UserId) (*CarbonFootprints, error) {
+func (UnimplementedImpactServer) GetUserImpact(context.Context, *UserId) (*Amount, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserImpact not implemented")
 }
-func (UnimplementedImpactServer) GetGroupImpact(context.Context, *GroupId) (*CarbonFootprint, error) {
+func (UnimplementedImpactServer) GetGroupImpact(context.Context, *GroupId) (*Amount, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGroupImpact not implemented")
 }
 func (UnimplementedImpactServer) GetLeaderBoardUsers(context.Context, *LeaderBoard) (*LeaderBoardUsers, error) {
